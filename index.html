@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Yatra - Smart Tourist Safety System</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">
+        <i class="fas fa-shield-alt"></i>
+        <span class="brand-name">Safe Yatra</span>
+        <span class="brand-tagline">Smart Tourist Safety</span>
+      </div>
+      <div class="nav-actions">
+        <select id="language-selector" class="language-selector">
+          <option value="en">🇺🇸 English</option>
+          <option value="hi">🇮🇳 हिंदी</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="ar">🇸🇦 العربية</option>
+          <option value="zh">🇨🇳 中文</option>
+        </select>
+        <button id="auth-toggle" class="btn btn--outline btn--sm">Login</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container main-content">
+    <!-- Welcome Section -->
+    <section id="welcome" class="welcome-section">
+      <div class="welcome-header">
+        <h1 class="welcome-title" data-translate="welcome">Welcome to Safe Yatra</h1>
+        <p class="welcome-subtitle">AI-Powered Tourist Safety & Emergency Response System</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-id-card-alt feature-icon"></i>
+          <h3>Digital Tourist ID</h3>
+          <p>Blockchain-secured digital identity for seamless travel</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-brain feature-icon"></i>
+          <h3>AI Safety Assistant</h3>
+          <p>Real-time threat analysis and safety recommendations</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-map-marked-alt feature-icon"></i>
+          <h3>Smart Geo-Fencing</h3>
+          <p>Intelligent safety zones with predictive alerts</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-phone-alt feature-icon"></i>
+          <h3>24/7 Emergency SOS</h3>
+          <p>Instant connection to local authorities & embassies</p>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <button id="start-registration" class="btn btn--primary btn--lg">
+          <i class="fas fa-user-plus"></i>
+          <span data-translate="register">Get Started - Register Now</span>
+        </button>
+        <button id="view-dashboard" class="btn btn--secondary btn--lg" style="display: none;">
+          <i class="fas fa-tachometer-alt"></i>
+          View Dashboard
+        </button>
+      </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section id="registration" class="section-container hidden">
+      <div class="card registration-card">
+        <div class="registration-header">
+          <h2><i class="fas fa-user-plus"></i> Tourist Registration</h2>
+          <div class="progress-indicator">
+            <div class="progress-step active" data-step="1">1</div>
+            <div class="progress-step" data-step="2">2</div>
+            <div class="progress-step" data-step="3">3</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Personal Information -->
+        <div id="reg-step-1" class="registration-step active">
+          <h3>Personal Information</h3>
+          <form id="personal-info-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" id="full-name" class="form-control" required placeholder="Enter your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nationality *</label>
+                <select id="nationality" class="form-control" required>
+                  <option value="">Select Nationality</option>
+                  <option value="Indian">Indian</option>
+                  <option value="American">American</option>
+                  <option value="British">British</option>
+                  <option value="Canadian">Canadian</option>
+                  <option value="Australian">Australian</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Email *</label>
+                <input type="email" id="email" class="form-control" required placeholder="Enter your email">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mobile Number *</label>
+                <input type="tel" id="phone" class="form-control" required placeholder="Enter your mobile number">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Passport Number *</label>
+                <input type="text" id="passport" class="form-control" required placeholder="Enter passport number">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date of Birth *</label>
+                <input type="date" id="dob" class="form-control" required>
+              </div>
+            </div>
+            <button type="button" id="next-step-1" class="btn btn--primary">
+              Next <i class="fas fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 2: Travel Information -->
+        <div id="reg-step-2" class="registration-step">
+          <h3>Travel Details</h3>
+          <form id="travel-info-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Journey Start Date *</label>
+                <input type="date" id="start-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Journey End Date *</label>
+                <input type="date" id="end-date" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Purpose of Visit</label>
+              <select id="visit-purpose" class="form-control">
+                <option value="tourism">Tourism</option>
+                <option value="business">Business</option>
+                <option value="medical">Medical</option>
+                <option value="education">Education</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emergency Contact Name</label>
+              <input type="text" id="emergency-name" class="form-control" placeholder="Emergency contact name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emergency Contact Phone</label>
+              <input type="tel" id="emergency-phone" class="form-control" placeholder="Emergency contact phone">
+            </div>
+            <div class="form-actions">
+              <button type="button" id="prev-step-2" class="btn btn--outline">
+                <i class="fas fa-arrow-left"></i> Previous
+              </button>
+              <button type="button" id="next-step-2" class="btn btn--primary">
+                Next <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 3: Verification & Digital ID -->
+        <div id="reg-step-3" class="registration-step">
+          <h3>Verification & Digital ID Generation</h3>
+          <div id="kyc-simulation" class="kyc-container">
+            <div class="kyc-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Document Verification</span>
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="kyc-item">
+              <i class="fas fa-shield-check"></i>
+              <span>Blockchain ID Generation</span>
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="kyc-item">
+              <i class="fas fa-qrcode"></i>
+              <span>QR Code Creation</span>
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          
+          <div id="digital-id" class="digital-id-card" style="display: none;">
+            <div class="id-header">
+              <div class="id-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Safe Yatra Digital ID</span>
+              </div>
+              <div class="id-qr">
+                <div class="qr-code">QR</div>
+              </div>
+            </div>
+            <div class="id-content">
+              <h4 id="id-name">Tourist Name</h4>
+              <div class="id-details">
+                <div class="id-item">
+                  <span class="id-label">ID Number:</span>
+                  <span id="id-number">TOUR-XXXX</span>
+                </div>
+                <div class="id-item">
+                  <span class="id-label">Valid From:</span>
+                  <span id="id-validity">Date Range</span>
+                </div>
+                <div class="id-item">
+                  <span class="id-label">Status:</span>
+                  <span class="status status--success">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" id="prev-step-3" class="btn btn--outline">
+              <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" id="complete-registration" class="btn btn--primary" style="display: none;">
+              <i class="fas fa-check"></i> Complete Registration
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section-container hidden">
+      <div class="dashboard-header">
+        <h2><i class="fas fa-tachometer-alt"></i> Safety Dashboard</h2>
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <i class="fas fa-shield-check stat-icon"></i>
+            <div class="stat-content">
+              <span class="stat-value" id="current-safety-score">8.5</span>
+              <span class="stat-label" data-translate="safetyScore">Safety Score</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-map-marker-alt stat-icon"></i>
+            <div class="stat-content">
+              <span class="stat-value">Safe Zone</span>
+              <span class="stat-label" data-translate="currentLocation">Current Status</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-exclamation-triangle stat-icon"></i>
+            <div class="stat-content">
+              <span class="stat-value" id="active-alerts-count">2</span>
+              <span class="stat-label" data-translate="alerts">Active Alerts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency SOS - Prominent placement at top -->
+      <div class="card emergency-card">
+        <div class="card-header">
+          <h3><i class="fas fa-exclamation-triangle"></i> Emergency Services</h3>
+        </div>
+        <div class="emergency-content">
+          <button id="emergency-sos" class="emergency-btn">
+            <i class="fas fa-phone-alt"></i>
+            <span data-translate="emergency">EMERGENCY SOS</span>
+            <div class="ripple"></div>
+          </button>
+          <div class="emergency-contacts">
+            <div class="contact-item">
+              <i class="fas fa-hospital"></i>
+              <span>Medical: 102</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Police: 100</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-fire"></i>
+              <span>Fire: 101</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-building"></i>
+              <span data-translate="embassy">Embassy Services</span>
+            </div>
+          </div>
+        </div>
+        <div id="sos-status" class="sos-status" style="display: none;"></div>
+      </div>
+
+      <!-- Map and Tracking -->
+      <div class="card map-card">
+        <div class="card-header">
+          <h3><i class="fas fa-map-marked-alt"></i> Live Tracking & Safety Zones</h3>
+          <div class="map-controls">
+            <button id="center-location" class="btn btn--outline btn--sm">
+              <i class="fas fa-crosshairs"></i> Center
+            </button>
+            <button id="toggle-zones" class="btn btn--outline btn--sm">
+              <i class="fas fa-layer-group"></i> Zones
+            </button>
+          </div>
+        </div>
+        <div id="map" class="map-container" style="height: 400px; position: relative;"></div>
+        <div id="zone-status" class="zone-status">
+          <div class="zone-indicator safe">
+            <i class="fas fa-check-circle"></i>
+            <span>You are in a Safe Zone</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Assistant Chat -->
+      <div class="card ai-assistant-card">
+        <div class="card-header">
+          <h3><i class="fas fa-robot"></i> AI Safety Assistant</h3>
+          <div class="ai-status">
+            <div class="status-dot active"></div>
+            <span>Online</span>
+          </div>
+        </div>
+        <div id="chat-container" class="chat-container">
+          <div class="chat-message ai-message">
+            <div class="message-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+              <p>Hello! I'm your AI Safety Assistant. I can help with real-time threat analysis, safety recommendations, and emergency guidance. How can I assist you today?</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-container">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Ask about safety, directions, or emergencies...">
+          <button id="send-message" class="btn btn--primary btn--sm">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Alerts & Intelligence -->
+      <div class="card alerts-card">
+        <div class="card-header">
+          <h3><i class="fas fa-bell"></i> Intelligence Alerts</h3>
+          <button id="refresh-alerts" class="btn btn--outline btn--sm">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div id="alerts-list" class="alerts-list">
+          <!-- Alerts will be populated here -->
+        </div>
+      </div>
+
+      <!-- Embassy Services -->
+      <div class="card embassy-card">
+        <div class="card-header">
+          <h3><i class="fas fa-flag"></i> Embassy & Consular Services</h3>
+        </div>
+        <div id="embassy-services" class="embassy-services">
+          <!-- Embassy info will be populated here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Authority Dashboard -->
+    <section id="authority-dashboard" class="section-container hidden">
+      <div class="authority-header">
+        <h2><i class="fas fa-shield"></i> Authority Command Center</h2>
+        <div class="authority-controls">
+          <button id="refresh-data" class="btn btn--outline">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+          <button id="export-data" class="btn btn--secondary">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <div class="authority-grid">
+        <div class="card monitoring-card">
+          <div class="card-header">
+            <h3><i class="fas fa-users"></i> Tourist Monitoring</h3>
+          </div>
+          <div id="tourist-list" class="tourist-list">
+            <!-- Tourist monitoring data -->
+          </div>
+        </div>
+
+        <div class="card incidents-card">
+          <div class="card-header">
+            <h3><i class="fas fa-exclamation-circle"></i> Active Incidents</h3>
+          </div>
+          <div id="incidents-list" class="incidents-list">
+            <!-- Incidents will be populated here -->
+          </div>
+        </div>
+
+        <div class="card communications-card">
+          <div class="card-header">
+            <h3><i class="fas fa-comments"></i> Communications</h3>
+          </div>
+          <div id="communications-panel" class="communications-panel">
+            <p>Emergency communication center - Ready for alerts</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p id="loading-message">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Modal for SOS Confirmation -->
+  <div id="sos-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-exclamation-triangle"></i> Emergency SOS Activated</h3>
+      </div>
+      <div class="modal-body">
+        <p>Your emergency alert has been sent to:</p>
+        <ul>
+          <li>Local Police</li>
+          <li>Medical Emergency Services</li>
+          <li>Nearest Embassy</li>
+          <li>Emergency Contacts</li>
+        </ul>
+        <p>Your location has been shared. Help is on the way!</p>
+        <div class="countdown">
+          <span>Auto-close in <span id="countdown">10</span>s</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
